@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My First Website</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      color: #007acc;
+    }
+    button {
+      background: #007acc;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005f99;
+    }
+    .box {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to My First Website</h1>
+  <p>This page shows the 3 main parts of a website:</p>
+  <ol>
+    <li><b>HTML</b>: Structure (like headings, paragraphs, buttons).</li>
+    <li><b>CSS</b>: Styling (colors, fonts, layout).</li>
+    <li><b>JavaScript</b>: Interactivity (making things happen when you click).</li>
+  </ol>
+
+  <button onclick="sayHello()">Click Me!</button>
+
+  <div class="box" id="messageBox">
+    Nothing has happened yet...
+  </div>
+
+  <script>
+    function sayHello() {
+      document.getElementById("messageBox").innerText = "🎉 You clicked the button! Websites can respond to you.";
+    }
+  </script>
+</body>
+</html>
