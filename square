@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How Websites Work — Simple Demo</title>
+  <!--
+    This single file shows the 3 pillars of the web:
+    1) HTML = Content & Structure
+    2) CSS  = Presentation (what it looks like)
+    3) JS   = Behavior (interaction)
+
+    Open your browser DevTools (usually F12 or Cmd/Ctrl+Opt/Alt+I)
+    and use the Elements, Console, and Network tabs while exploring.
+  -->
+  <style>
+    :root {
+      --bg: #0f172a;        /* slate-900 */
+      --panel: #111827;     /* gray-900 */
+      --text: #e5e7eb;      /* gray-200 */
+      --muted: #9ca3af;     /* gray-400 */
+      --accent: #22d3ee;    /* cyan-400 */
+      --accent-2: #a78bfa;  /* violet-400 */
+      --ok: #34d399;        /* green-400 */
+      --warn: #fbbf24;      /* amber-400 */
+      --danger: #f87171;    /* red-400 */
+      --card: #111827cc;    /* translucent */
+    }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 10% 0%, #1f2937 0, var(--bg) 40%);
+    }
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: linear-gradient(180deg, #0b1022, #0f172a);
+      border-bottom: 1px solid #1f2937;
+      padding: .75rem 1rem;
+      display: flex; gap: 1rem; align-items: center; justify-content: space-between;
+    }
+    .brand { font-weight: 800; letter-spacing: .3px; }
+    .brand span { color: var(--accent); }
+    nav { display: flex; gap: .75rem; flex-wrap: wrap; }
+    nav a {
+      color: var(--text); text-decoration: none; font-weight: 600;
+      border: 1px solid #1f2937; padding: .35rem .6rem; border-radius: .75rem;
+      background: #0b1224; transition: transform .08s ease, background .2s ease;
+    }
+    nav a:hover { transform: translateY(-1px); background: #0d1630; }
+
+    main { max-width: 1100px; margin: 1.25rem auto; padding: 0 1rem 5rem; }
+    section { margin: 1.5rem 0; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid #1f2937; border-radius: 1rem; padding: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.02);
+    }
+    .grid { display: grid; gap: 1rem; }
+    @media (min-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    h1 { font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.6rem); margin: .5rem 0 0; }
+    h2 { font-size: 1.25rem; margin: 0 0 .5rem; }
+    h3 { font-size: 1.05rem; margin: .75rem 0 .25rem; color: var(--accent-2); }
+    p { color: var(--text); margin: .25rem 0 .75rem; }
+    small, .muted { color: var(--muted); }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { background: #0b1224; padding: .75rem; border-radius: .5rem; border: 1px solid #1f2937; overflow: auto; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      border: 1px solid #1f2937; background: #0d1630; color: var(--text);
+      padding: .5rem .8rem; border-radius: .75rem; cursor: pointer;
+    }
+    .btn:active { transform: translateY(1px); }
+    .row { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .ok { color: var(--ok) }
+    .warn { color: var(--warn) }
+    .danger { color: var(--danger) }
+
+    .kbd { border: 1px solid #1f2937; background: #0b1224; padding: .15rem .35rem; border-radius: .4rem; }
+    .pill { background: #0b1224; border: 1px solid #1f2937; padding: .15rem .5rem; border-radius: 999px; font-size: .8rem; }
+
+    .callout { border-left: 3px solid var(--accent); padding-left: .75rem; }
+    details { background: #0b1224; border: 1px solid #1f2937; border-radius: .5rem; padding: .5rem .75rem; }
+    summary { cursor: pointer; font-weight: 700; }
+
+    footer { opacity: .9; text-align: center; margin-top: 2rem; }
+      /* Spinning square demo */
+    .spin-area { display: grid; gap: .75rem; align-items: center; }
+    .spin-stage { height: 180px; display: grid; place-items: center; background: #0b1224; border: 1px solid #1f2937; border-radius: .75rem; }
+    .spin-box { width: 120px; height: 120px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-radius: .75rem; box-shadow: 0 10px 30px rgba(0,0,0,.25); animation: spin var(--spin-speed, 2s) linear infinite; }
+    @keyframes spin { from { transform: rotate(0turn) } to { transform: rotate(1turn) } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Web 101: <span>HTML + CSS + JS</span></div>
+    <nav aria-label="Section links">
+      <a href="#request">Request→Response</a>
+      <a href="#html">HTML</a>
+      <a href="#css">CSS</a>
+      <a href="#js">JavaScript</a>
+      <a href="#forms">Forms</a>
+      <a href="#network">Network</a>
+      <a href="#spin">Spin</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="card" id="request">
+      <h1>What happens when you visit a website?</h1>
+      <p class="muted">High-level flow of a page load.</p>
+      <div class="grid grid-3">
+        <div>
+          <h2>1) You type a URL</h2>
+          <p>Your browser resolves the domain, opens a connection, and <em>requests</em> a document (usually <code>index.html</code>).</p>
+          <p class="pill">Client (your browser)</p>
+        </div>
+        <div>
+          <h2>2) Server responds</h2>
+          <p>A web server sends back HTML. The browser starts parsing it top-to-bottom.</p>
+          <p class="pill">Server</p>
+        </div>
+        <div>
+          <h2>3) Browser renders</h2>
+          <p>While parsing HTML, the browser discovers CSS & JS files, downloads them, builds the DOM & CSSOM, and paints pixels.</p>
+          <p class="pill">Render engine</p>
+        </div>
+      </div>
+      <pre aria-label="ASCII sequence diagram"><code>
+Browser              Server
+   |  GET /index.html  |   → Request
+   |------------------->|
+   |  200 OK (HTML)     |   ← Response
+   |<-------------------|
+   | parse HTML → fetch linked CSS/JS/Images
+   | build DOM/CSSOM → layout → paint
+      </code></pre>
+      <p class="callout"><strong>Tip:</strong> Open <span class="kbd">F12</span> → Network tab, then click any button below that makes a request to watch it happen.</p>
+    </section>
+
+    <section class="card" id="html">
+      <h2>HTML — Structure & Meaning</h2>
+      <p>HTML describes <em>what</em> is on the page: headings, paragraphs, links, lists, images, and more. Tags (like <code>&lt;h1&gt;</code>) give content semantic meaning.</p>
+      <div class="grid grid-2">
+        <div>
+          <h3>Example Markup</h3>
+          <pre><code>&lt;article&gt;
+  &lt;h1&gt;A Blog Post&lt;/h1&gt;
+  &lt;p&gt;Hello, world!&lt;/p&gt;
+  &lt;a href="/about"&gt;About me&lt;/a&gt;
+&lt;/article&gt;
+          </code></pre>
+        </div>
+        <div>
+          <h3>Rendered Result</h3>
+          <article style="background:#0b1224;border:1px solid #1f2937;padding:.75rem;border-radius:.5rem">
+            <h1 style="font-size:1.2rem;margin:.2rem 0 .4rem">A Blog Post</h1>
+            <p>Hello, world!</p>
+            <a href="#" onclick="alert('Imagine navigating to /about'); return false;">About me</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="css">
+      <h2>CSS — Presentation</h2>
+      <p>CSS controls <em>how</em> things look: colors, spacing, layout, responsive design.</p>
+      <div class="row" style="margin-bottom:.5rem">
+        <button class="btn" id="toggle-theme">Toggle Accent</button>
+        <button class="btn" id="grow-text">Grow Text</button>
+        <button class="btn" id="shrink-text">Shrink Text</button>
+      </div>
+      <p class="muted">Try the buttons above; CSS variables and classes update live.</p>
+      <div class="grid grid-3">
+        <div class="card" style="background:#0b1224">
+          <h3>Box Model</h3>
+          <p>Every element has <em>content</em>, <em>padding</em>, <em>border</em>, and <em>margin</em>.</p>
+        </div>
+        <div class="card" style="background:#0b1224">
+          <h3>Flex & Grid</h3>
+          <p>Modern layout systems for responsive UIs without floats or tables.</p>
+        </div>
+        <div class="card" style="background:#0b1224">
+          <h3>Media Queries</h3>
+          <p>Adapt styles to different screen sizes with <code>@media</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="js">
+      <h2>JavaScript — Behavior</h2>
+      <p>JavaScript lets pages respond to user actions, update the DOM, and talk to servers.</p>
+      <div class="row">
+        <button class="btn" id="count-btn" aria-live="polite">Clicked 0 times</button>
+        <button class="btn" id="dom-btn">Add a note below</button>
+        <button class="btn" id="storage-btn">Save note to localStorage</button>
+      </div>
+      <div id="notes" class="grid" style="margin-top:.75rem"></div>
+      <details style="margin-top:.5rem">
+        <summary>Show sample JS</summary>
+        <pre><code>// Find a DOM node
+const btn = document.querySelector('#count-btn')
+
+// Update text when clicked
+let n = 0
+btn.addEventListener('click', () => {
+  n++
+  btn.textContent = `Clicked ${n} times`
+})
+        </code></pre>
+      </details>
+    </section>
+
+    <section class="card" id="forms">
+      <h2>Forms — Sending Data</h2>
+      <p>Forms package user input and send it to a server. Here we intercept submission with JS to preview the data.</p>
+      <form id="demo-form">
+        <div class="grid grid-2">
+          <label> Name<br><input name="name" required placeholder="Ada" /></label>
+          <label> Email<br><input type="email" name="email" required placeholder="ada@example.com" /></label>
+        </div>
+        <label> Message<br><textarea name="message" rows="3" placeholder="Hello!"></textarea></label>
+        <div class="row" style="margin-top:.5rem">
+          <button class="btn" type="submit">Preview submission</button>
+          <span class="muted">(no real network request is made)</span>
+        </div>
+      </form>
+      <pre id="form-output" style="margin-top:.75rem" aria-live="polite"></pre>
+    </section>
+
+    <section class="card" id="network">
+      <h2>Network — Talking to Servers</h2>
+      <p>Click a button to fetch JSON from a public demo API. Watch the <strong>Network</strong> tab in DevTools.</p>
+      <div class="row">
+        <button class="btn" id="fetch-zen">Fetch GitHub Zen</button>
+        <button class="btn" id="fetch-todo">Fetch a TODO</button>
+      </div>
+      <pre id="fetch-output" style="margin-top:.75rem"></pre>
+      <p class="muted">If a request is blocked by a network policy, that's fine—the error shows how browsers report failures.</p>
+    </section>    <section class="card" id="spin">
+      <h2>CSS Animation — A Square That Spins</h2>
+      <p>CSS can animate properties over time. Here we rotate a square with <code>@keyframes</code>. Use the controls to pause or change the speed.</p>
+      <div class="spin-area">
+        <div class="row">
+          <button class="btn" id="spin-toggle">Pause</button>
+          <label class="row" style="align-items:center; gap:.4rem;">
+            <span class="muted">Speed (seconds/turn)</span>
+            <input id="spin-speed" type="range" min="0.5" max="5" step="0.1" value="2" />
+            <span id="spin-speed-label" class="pill">2.0s</span>
+          </label>
+        </div>
+        <div class="spin-stage">
+          <div class="spin-box" id="spin-box" aria-label="spinning square"></div>
+        </div>
+        <details>
+          <summary>Show the core CSS</summary>
+          <pre><code>.spin-box { animation: spin 2s linear infinite; }
+@keyframes spin { from { transform: rotate(0turn) } to { transform: rotate(1turn) } }</code></pre>
+        </details>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Next Steps</h2>
+      <ul>
+        <li>Inspect any element (right-click → Inspect) and tweak styles live.</li>
+        <li>Try adding a new section in the HTML and style it in the <code>&lt;style&gt;</code> block.</li>
+        <li>Open the Console and run: <code>document.title = 'I changed this!'</code></li>
+      </ul>
+    </section>
+
+    <footer class="muted">
+      Built with plain HTML/CSS/JS — no frameworks. View source to learn.
+    </footer>
+  </main>
+
+  <script>
+    // ===== CSS demo buttons =====
+    const rootStyle = document.documentElement.style
+    const accentPairs = [
+      ['--accent', '#22d3ee'],
+      ['--accent', '#f472b6'],
+      ['--accent', '#f59e0b'],
+      ['--accent', '#34d399'],
+      ['--accent', '#a78bfa'],
+    ]
+    let accentIndex = 0
+    document.getElementById('toggle-theme').addEventListener('click', () => {
+      accentIndex = (accentIndex + 1) % accentPairs.length
+      const [v, color] = accentPairs[accentIndex]
+      rootStyle.setProperty(v, color)
+    })
+
+    let baseSize = 16
+    const applyFont = () => { document.body.style.fontSize = baseSize + 'px' }
+    document.getElementById('grow-text').addEventListener('click', () => { baseSize += 1; applyFont() })
+    document.getElementById('shrink-text').addEventListener('click', () => { baseSize = Math.max(12, baseSize - 1); applyFont() })
+
+    // ===== JavaScript demo: counter & DOM updates =====
+    const countBtn = document.getElementById('count-btn')
+    let clicks = 0
+    countBtn.addEventListener('click', () => {
+      clicks++
+      countBtn.textContent = `Clicked ${clicks} ${clicks === 1 ? 'time' : 'times'}`
+    })
+
+    const notes = document.getElementById('notes')
+    document.getElementById('dom-btn').addEventListener('click', () => {
+      const el = document.createElement('div')
+      el.className = 'card'
+      el.innerHTML = `<strong>Note ${notes.children.length + 1}:</strong> This node was created with JS.`
+      notes.prepend(el)
+    })
+
+    // localStorage example
+    document.getElementById('storage-btn').addEventListener('click', () => {
+      const content = [...notes.children].map(n => n.textContent).join('\n')
+      localStorage.setItem('web101-notes', content)
+      alert('Saved notes to localStorage! Open Application → Local Storage to see it.')
+    })
+
+    // ===== Forms: intercept submit and show FormData =====
+    const form = document.getElementById('demo-form')
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const data = Object.fromEntries(new FormData(form).entries())
+      document.getElementById('form-output').textContent = JSON.stringify(data, null, 2)
+    })
+
+    // ===== Network: fetch demo APIs =====
+    const out = document.getElementById('fetch-output')
+    const json = (obj) => JSON.stringify(obj, null, 2)
+
+    document.getElementById('fetch-zen').addEventListener('click', async () => {
+      out.textContent = 'Loading…'
+      try {
+        const res = await fetch('https://api.github.com/zen')
+        if (!res.ok) throw new Error('HTTP ' + res.status)
+        const text = await res.text()
+        out.textContent = text
+      } catch (err) {
+        out.textContent = 'Request failed: ' + err
+        console.error(err)
+      }
+    })
+
+    document.getElementById('fetch-todo').addEventListener('click', async () => {
+      out.textContent = 'Loading…'
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/todos/1')
+        if (!res.ok) throw new Error('HTTP ' + res.status)
+        const data = await res.json()
+        out.textContent = json(data)
+      } catch (err) {
+        out.textContent = 'Request failed: ' + err
+        console.error(err)
+      }
+    })
+    // ==== Spinning square controls ====
+    const spinBox = document.getElementById('spin-box')
+    const spinToggle = document.getElementById('spin-toggle')
+    const spinSpeed = document.getElementById('spin-speed')
+    const spinSpeedLabel = document.getElementById('spin-speed-label')
+
+    let spinning = true
+    spinToggle?.addEventListener('click', () => {
+      spinning = !spinning
+      spinBox.style.animationPlayState = spinning ? 'running' : 'paused'
+      spinToggle.textContent = spinning ? 'Pause' : 'Resume'
+    })
+
+    const applySpeed = (v) => {
+      document.documentElement.style.setProperty('--spin-speed', v + 's')
+      spinSpeedLabel.textContent = v + 's'
+    }
+    spinSpeed?.addEventListener('input', (e) => applySpeed(e.target.value))
+    applySpeed(spinSpeed?.value || '2')
+  </script>
+</body>
+</html>
